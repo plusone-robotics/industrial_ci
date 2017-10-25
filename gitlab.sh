@@ -25,4 +25,14 @@ export TARGET_REPO_PATH=$CI_PROJECT_DIR
 export TARGET_REPO_NAME=$CI_PROJECT_NAME
 export _DO_NOT_FOLD=true
 
+if [ -n "$SSH_PRIVATE_KEY" ]; then
+  # start SSH agent
+  eval $(ssh-agent -s)
+  # add key to agent
+  bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY")'
+  mkdir -p ~/.ssh
+  # setup known hosts
+  #echo "$SSH_SERVER_HOSTKEYS" >> ~/.ssh/known_hosts 
+fi
+
 env "$@" bash $DIR_THIS/industrial_ci/src/ci_main.sh
