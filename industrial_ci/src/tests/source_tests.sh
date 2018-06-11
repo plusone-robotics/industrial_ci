@@ -194,6 +194,7 @@ if [ "$NOT_TEST_BUILD" != "true" ]; then
 
     ici_time_start catkin_run_tests
     if [ "$BUILDER" == catkin ]; then
+    	source $CATKIN_WORKSPACE/install/setup.bash 
         catkin build --no-deps --catkin-make-args run_tests -- $OPT_RUN_V --no-status $PKGS_DOWNSTREAM $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
         if [ "${ROS_DISTRO}" == "hydro" ]; then
             PATH=/usr/local/bin:$PATH  # for installed catkin_test_results
