@@ -2,6 +2,7 @@
 
 # Copyright (c) 2016, Isaac I. Y. Saito
 # Copyright (c) 2017, Mathias Lüdtke
+# Copyright (c) 2018, Alexander Rössler
 # All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,31 +17,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This is the entrypoint for Gitlab CI only.
+# This is the entrypoint for BitBucket Pipelines only.
 
 # 2016/05/18 http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 DIR_THIS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-export TARGET_REPO_PATH=$CI_PROJECT_DIR
-export TARGET_REPO_NAME=$CI_PROJECT_NAME
+export TARGET_REPO_PATH=$BITBUCKET_CLONE_DIR
+export TARGET_REPO_NAME=${BITBUCKET_REPO_SLUG##*/}
+export PYTHONUNBUFFERED=${PYTHONUNBUFFERED:1}
 export _DO_NOT_FOLD=true
-
-if [ -n "$SSH_PRIVATE_KEY" ]; then
-  if [ "$CI_DISPOSABLE_ENVIRONMENT" != true ] && ! [ -f /.dockerenv ] ; then
-    echo "SSH auto set-up cannot be used in non-disposable environments"
-    exit 1
-  fi
-
-  # start SSH agent
-  eval $(ssh-agent -s)
-  # add key to agent
-  ssh-add <(echo "$SSH_PRIVATE_KEY") || { res=$?; echo "could not add ssh key"; exit $res; }
-
-  if [ -n "$SSH_SERVER_HOSTKEYS" ]; then
-    mkdir -p ~/.ssh
-    # setup known hosts
-    echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts
-  fi
-fi
 
 env "$@" bash $DIR_THIS/industrial_ci/src/ci_main.sh
