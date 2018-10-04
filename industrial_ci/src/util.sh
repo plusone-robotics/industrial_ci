@@ -189,7 +189,7 @@ function run_yamllint {
 
     yamllint_conf=$1
     target_paths=${2:-"$target_path_default"}  # multiple elements delimitted by space.
-    sudo apt-get install -qq -y python3-pkg-resources yamllint || (echo "WARN: Required package 'yaml_lint' isn't available. Skipping to check yaml files." && return);
+    sudo apt-get install -qq -y python3-pkg-resources yamllint || (echo "ERROR: Required package 'yaml_lint' isn't available. Skipping yamllint." && return);
 
     if [ -z "$yamllint_conf" ]; then
         # Get the yamllint version and assign an appropriate version of config file.
