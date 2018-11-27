@@ -53,7 +53,7 @@ env:
     - ROS_DISTRO=jade   UPSTREAM_WORKSPACE=file  ROSINSTALL_FILENAME=.ci.rosinstall  # Testing arbitrary file name without ROS_DISTRO suffix. As of 6/3/2016 this fails due to https://github.com/ros-industrial/industrial_core/pull/144#issuecomment-223186764
     - ROS_DISTRO=jade   APTKEY_STORE_SKS=hkp://ha.pool.sks-keyservers.vet  _DO_NOT_FOLD=true # Passing wrong SKS URL as a break test. Should still pass.
     - ROS_DISTRO=jade   UPSTREAM_WORKSPACE=file ROSINSTALL_FILENAME=.i.do.not.exist EXPECT_EXIT_CODE=1
-    - ROS_DISTRO=kinetic DOCKER_BASE_IMAGE="ros:kinetic-ros-base" NOT_TEST_BUILD='true' DEBUG_BASH='true' VERBOSE_OUTPUT='false'
+    - ROS_DISTRO=kinetic DOCKER_BASE_IMAGE="ros:kinetic-ros-base" NOT_TEST_BUILD='true' DEBUG_BASH='true' VERBOSE_OUTPUT='false' DOCKER_COMMIT="img_temp" POST_PROCESS=`docker image inspect "$DOCKER_COMMIT" --format="$DOCKER_COMMIT: {{.Size}} bytes"`
     - ROS_DISTRO=kinetic APTKEY_STORE_SKS=hkp://ha.pool.sks-keyservers.vet  # Passing wrong SKS URL as a break test. Should still pass.
     - ROS_DISTRO=lunar ROS_REPO=ros-shadow-fixed USE_MOCKUP='industrial_ci/mockups/industrial_ci_testpkg'
     - ROS_DISTRO=melodic AFTER_SCRIPT='grep -q ID=ubuntu /etc/os-release && grep -q VERSION_CODENAME=bionic /etc/os-release'
@@ -61,7 +61,6 @@ env:
     - ROS_DISTRO=melodic OS_NAME=debian OS_CODE_NAME=stretch AFTER_SCRIPT='grep -q ID=debian /etc/os-release && grep -q VERSION_ID=\"9\" /etc/os-release'
     - ROS_DISTRO=melodic OS_NAME=debian EXPECT_EXIT_CODE=1
     - ROS_DISTRO=melodic OS_NAME=debian OS_CODE_NAME=bionic EXPECT_EXIT_CODE=1
-    - ROS_DISTRO=melodic DOCKER_COMMIT="img_temp"
 
     # External repositories
     - ROS_DISTRO=kinetic _EXTERNAL_REPO='ros-industrial/industrial_core#kinetic-devel'
@@ -88,4 +87,3 @@ install:
 script:
   - industrial_ci/_wrap_test.sh # this script is only for internal use
   - if ! [ -z "$POST_PROCESS" ]; then $POST_PROCESS; fi
-  - if ! [ -z "$DOCKER_COMMIT" ]; then  echo "Test if the Docker image is committed or not. See the size of the Docker image is non-zero or not."; if docker image inspect $DOCKER_COMMIT --format='{{.Size}}'; then exit 0; else exit 1; fi fi

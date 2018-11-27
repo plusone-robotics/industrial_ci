@@ -111,7 +111,8 @@ function ici_run_cmd_in_docker() {
   wait %% || ret=$?
   trap - INT
   if [ -n "$commit_image" ]; then
-      docker commit -m "$DOCKER_COMMIT_MSG" "$cid" "$commit_image"
+  	echo "Committing container to tag: '$DOCKER_COMMIT'"
+    docker commit -m "$DOCKER_COMMIT_MSG" "$cid" "$commit_image" > /dev/null
   fi
   docker rm "$cid" > /dev/null
   return $ret
