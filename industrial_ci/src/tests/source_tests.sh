@@ -102,14 +102,14 @@ file) # When UPSTREAM_WORKSPACE is file, the dependended packages that need to b
     if [ -e $TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO ]; then
         # install (maybe unreleased version) dependencies from source for specific ros version
         if [ "$ROSINSTALL_AUTOMERGE" ] && [ "$ROSINSTALL_AUTOMERGE" == true ]; then
-            $ROSWS merge -t -y $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO
+            $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO -y
         else
             $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO
         fi
     elif [ -e $TARGET_REPO_PATH/$ROSINSTALL_FILENAME ]; then
         # install (maybe unreleased version) dependencies from source
         if [ "$ROSINSTALL_AUTOMERGE" ] && [ "$ROSINSTALL_AUTOMERGE" == true ]; then
-            $ROSWS merge -t -y $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME
+            $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME -y
         else
             $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME
         fi
@@ -119,7 +119,7 @@ file) # When UPSTREAM_WORKSPACE is file, the dependended packages that need to b
     ;;
 http://* | https://*) # When UPSTREAM_WORKSPACE is an http url, use it directly
     if [ "$ROSINSTALL_AUTOMERGE" ] && [ "$ROSINSTALL_AUTOMERGE" == true ]; then
-        $ROSWS merge -t -y $CATKIN_WORKSPACE/src $UPSTREAM_WORKSPACE
+        $ROSWS merge -t $CATKIN_WORKSPACE/src $UPSTREAM_WORKSPACE -y
     else
         $ROSWS merge -t $CATKIN_WORKSPACE/src $UPSTREAM_WORKSPACE
     fi
