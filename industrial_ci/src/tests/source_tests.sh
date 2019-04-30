@@ -101,16 +101,28 @@ file) # When UPSTREAM_WORKSPACE is file, the dependended packages that need to b
     # Prioritize $ROSINSTALL_FILENAME.$ROS_DISTRO if it exists over $ROSINSTALL_FILENAME.
     if [ -e $TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO ]; then
         # install (maybe unreleased version) dependencies from source for specific ros version
-        $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO
+        if [ ! "$ROSINSTALL_AUTOMERGE" ] || [ "$ROSINSTALL_AUTOMERGE" == true ]; then
+            $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO -y
+        else
+            $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME.$ROS_DISTRO
+        fi
     elif [ -e $TARGET_REPO_PATH/$ROSINSTALL_FILENAME ]; then
         # install (maybe unreleased version) dependencies from source
-        $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME
+        if [ ! "$ROSINSTALL_AUTOMERGE" ] || [ "$ROSINSTALL_AUTOMERGE" == true ]; then
+            $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME -y
+        else
+            $ROSWS merge -t $CATKIN_WORKSPACE/src file://$TARGET_REPO_PATH/$ROSINSTALL_FILENAME
+        fi
     else
         error "UPSTREAM_WORKSPACE file '$TARGET_REPO_PATH/$ROSINSTALL_FILENAME[.$ROS_DISTRO]' does not exist"
     fi
     ;;
 http://* | https://*) # When UPSTREAM_WORKSPACE is an http url, use it directly
-    $ROSWS merge -t $CATKIN_WORKSPACE/src $UPSTREAM_WORKSPACE
+    if [ ! "$ROSINSTALL_AUTOMERGE" ] || [ "$ROSINSTALL_AUTOMERGE" == true ]; then
+        $ROSWS merge -t $CATKIN_WORKSPACE/src $UPSTREAM_WORKSPACE -y
+    else
+        $ROSWS merge -t $CATKIN_WORKSPACE/src $UPSTREAM_WORKSPACE
+    fi
     ;;
 esac
 
